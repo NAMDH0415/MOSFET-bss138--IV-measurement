@@ -13,7 +13,7 @@ STM32L432KC Nucleo 보드와 10 kΩ 저항으로 BSS138 N채널 MOSFET의 **전�
 | 설정값 | 고정하는 전압 | 스윕하는 전압 | CSV 데이터 |
 | --- | --- | --- | --- |
 | `MEASUREMENT_MODE_VGS_ID` (`0`, 기본값) | 드레인 쪽 공급 DAC 2.8 V | 게이트 DAC 0~3.0 V | 512점 × 1회 |
-| `MEASUREMENT_MODE_VDS_ID` (`1`) | 게이트 DAC를 곡선마다 0.9, 1.0, 1.1, 1.2 V로 고정 | 드레인 쪽 공급 DAC 0~2.8 V | 128점 × 4곡선 |
+| `MEASUREMENT_MODE_VDS_ID` (`1`) | 게이트 DAC 1.0 V | 드레인 쪽 공급 DAC 0~2.8 V | 512점 × 1회 |
 
 출력 특성을 측정하려면 오른쪽 값을 `MEASUREMENT_MODE_VDS_ID`로 바꿉니다. 설정을 저장한 뒤 **Debug로 다시 빌드하고 보드에 다운로드**해야 적용됩니다. 두 모드는 같은 배선을 사용합니다.
 
@@ -51,9 +51,9 @@ ID_uA = (VSupply − VDrain) × 1,000,000 / 10,000
 1. 부팅 후 ADC를 보정하고, 두 DAC 채널을 시작한 뒤 선택한 모드의 CSV 헤더를 전송합니다.
 2. 각 점에서 DAC 설정 후 100 ms를 기다립니다. 공급·드레인·게이트 전압을 각각 16회 읽어 평균을 구합니다. 12비트 ADC 전압 변환에는 기준 전압 3.3 V를 가정합니다.
 3. 드레인 전류를 계산해 UART로 한 줄을 보내고 50 ms 대기합니다. 기본 설정은 두 모드 모두 512점이며, 설정된 대기 시간만 합쳐 약 77초가 걸립니다. 실제 시간에는 ADC 변환과 UART 전송 시간이 추가됩니다.
-4. 게이트 스윕이 끝나면 게이트 DAC 설정값을 0 V로 돌립니다. 출력 특성 모드는 곡선마다 공급 DAC를 0 V로 되돌리고 마지막에 게이트 DAC도 0 V로 설정합니다. 두 모드 모두 전체 측정을 마치면 `measurement_done_live`가 1이 됩니다. 다시 측정하려면 보드를 리셋합니다.
+4. 측정이 끝나면 게이트 DAC 설정값을 0 V로 돌립니다. 출력 특성 모드는 공급 DAC도 0 V로 돌립니다. 두 모드 모두 `measurement_done_live`가 1이 됩니다. 다시 측정하려면 보드를 리셋합니다.
 
-게이트 스윕 범위·점 수와 공통 측정 설정은 [sweep_app.h](Core/Inc/sweep_app.h)에 있습니다. 출력 특성 모드의 게이트 설정값과 공급 스윕 범위·점 수는 [vds_sweep_app.c](Core/Src/vds_sweep_app.c)에서 조정합니다.
+게이트 스윕 범위·점 수와 공통 측정 설정은 [sweep_app.h](Core/Inc/sweep_app.h)에 있습니다. 출력 특성 모드의 고정 게이트 설정값 `VDS_GATE_SET_V`와 공급 스윕 범위·점 수는 [vds_sweep_app.c](Core/Src/vds_sweep_app.c)에서 조정합니다.
 
 ## 빌드 및 실행
 
@@ -79,7 +79,7 @@ VGS_Set,VGS_Measured,VSupply,VDrain,ID_uA,time_ms,sample_id,sweep_id,point_index
 VGS_Set,VGS_Measured,VSupply_Set,VSupply,VDS_Measured,ID_uA,time_ms,sample_id,sweep_id,point_index
 ```
 
-가로축에 `VDS_Measured`, 세로축에 `ID_uA`를 놓고 `sweep_id`(1~4)별로 곡선을 나눕니다. 각 곡선의 게이트 설정값은 `VGS_Set`에서 확인합니다. `VSupply_Set`은 DAC 설정값, `VSupply`는 저항 위쪽 실측값, `VDS_Measured`는 MOSFET 드레인-소스 사이의 실측 전압입니다.
+가로축에 `VDS_Measured`, 세로축에 `ID_uA`를 놓아 고정 게이트 전압에서의 곡선 하나를 그립니다. 모든 행의 `sweep_id`는 1이며, 고정 게이트 설정값은 `VGS_Set`에서 확인합니다. `VSupply_Set`은 DAC 설정값, `VSupply`는 저항 위쪽 실측값, `VDS_Measured`는 MOSFET 드레인-소스 사이의 실측 전압입니다.
 
 두 형식 모두 전압은 V, 전류는 µA, `time_ms`는 부팅 후 경과 시간(ms)입니다. `sample_id`는 전체 측정에서 0부터 증가하고, `point_index`는 각 스윕에서 0부터 다시 시작합니다.
 

@@ -1,6 +1,6 @@
 # BSS138 출력 특성 측정 (`VDS–ID`)
 
-게이트 전압을 일정하게 유지한 상태에서 드레인-소스 전압에 따른 드레인 전류를 기록합니다. 한 게이트 전압당 한 곡선을 얻으며, 여러 곡선을 비교하면 게이트 전압이 드레인 전류에 미치는 영향을 볼 수 있습니다.
+게이트 전압을 일정하게 유지한 상태에서 드레인-소스 전압에 따른 드레인 전류를 기록합니다. 보드를 리셋할 때마다 고정된 게이트 전압에서 출력 특성 곡선 하나를 얻습니다.
 
 ## 기존 배선으로 측정하기
 
@@ -23,10 +23,10 @@ ID [µA] = (VSupply − VDrain) × 1,000,000 / 10,000
 1. [sweep_app.h](../Core/Inc/sweep_app.h)에서 `MEASUREMENT_MODE`를 `MEASUREMENT_MODE_VDS_ID`(1)로 바꿉니다. `MEASUREMENT_MODE_VGS_ID`(0)는 기존 게이트 스윕 모드이며 기본값입니다.
 2. STM32CubeIDE에서 **Debug**로 빌드하고 다운로드합니다. CSV의 소수점 출력을 위해 링커의 `-u _printf_float` 옵션을 사용하며, 현재 Debug 구성에 설정되어 있습니다.
 3. 시리얼 터미널을 **115200 baud, 8N1, 흐름 제어 없음**으로 열고 보드를 리셋합니다.
-4. [vds_sweep_app.c](../Core/Src/vds_sweep_app.c)는 게이트 설정값 **0.9, 1.0, 1.1, 1.2 V** 각각에서 공급 DAC를 **0~2.8 V**로 128점씩 스윕합니다. 총 512점을 기록합니다. 각 점은 100 ms 안정화 후 세 ADC 채널을 각각 16회 읽고, CSV 전송 뒤 50 ms 대기합니다.
-5. 각 곡선 후 공급 DAC 설정을 0 V로 돌립니다. 마지막 곡선이 끝나면 게이트 설정도 0 V로 돌리고 `measurement_done_live`를 1로 설정합니다.
+4. [vds_sweep_app.c](../Core/Src/vds_sweep_app.c)는 게이트를 **1.0 V**로 고정한 채 공급 DAC를 **0~2.8 V**로 **512점 한 번** 스윕합니다. 각 점은 100 ms 안정화 후 세 ADC 채널을 각각 16회 읽고, CSV 전송 뒤 50 ms 대기합니다.
+5. 스윕이 끝나면 공급과 게이트 DAC 설정을 0 V로 돌리고 `measurement_done_live`를 1로 설정합니다.
 
-게이트 설정값은 앞선 BSS138 실험에서 전류가 변한 구간을 기준으로 골랐습니다. 개체와 온도에 따라 곡선이 달라질 수 있으므로 `VGS_Measured`를 함께 확인하고, 필요하면 `gate_setpoints_v`를 조정합니다.
+기본 게이트 설정값 1.0 V는 앞선 BSS138 실험에서 전류가 증가하기 시작한 구간을 기준으로 골랐습니다. 실측 게이트 전압은 `VGS_Measured`에 기록됩니다. 다른 고정 전압이 필요하면 `VDS_GATE_SET_V`를 바꾼 뒤 다시 빌드하고 다운로드합니다.
 
 ## CSV와 그래프
 
@@ -34,9 +34,9 @@ ID [µA] = (VSupply − VDrain) × 1,000,000 / 10,000
 VGS_Set,VGS_Measured,VSupply_Set,VSupply,VDS_Measured,ID_uA,time_ms,sample_id,sweep_id,point_index
 ```
 
-- **가로축**은 `VDS_Measured`, **세로축**은 `ID_uA`입니다. `sweep_id`로 나누고 각 곡선에 `VGS_Set` 또는 실측 게이트 전압을 표시합니다.
+- **가로축**은 `VDS_Measured`, **세로축**은 `ID_uA`입니다. `VGS_Set` 또는 실측 게이트 전압을 곡선의 측정 조건으로 표시할 수 있습니다.
 - `VSupply_Set`은 DAC 설정값이고 `VSupply`는 저항 위쪽의 실측 전압입니다. 두 열 모두 드레인 전압을 대신할 수 없습니다.
-- `sample_id`는 전체 측정에서 0부터 증가하고, `point_index`는 각 곡선에서 0부터 다시 시작합니다. `sweep_id`는 1부터 시작합니다.
+- `sample_id`와 `point_index`는 모두 0부터 511까지 증가하며, `sweep_id`는 모든 행에서 1입니다.
 - 이 모드의 CSV 헤더는 기존 게이트 스윕과 다릅니다. 두 모드는 ADC, DAC, UART 처리 및 최신값 디버그 변수를 공유합니다. 스윕 배열은 기존 게이트 스윕 모드에서 채워집니다.
 
 ## 측정 범위와 회로 변경이 필요한 경우
