@@ -62,8 +62,6 @@ ADC·DAC DMA를 적용한 펌웨어를 NUCLEO-L432KC에 올리고, BSS138과 10 
 
 실측 `VDS` 약 2.52 V에서 전류가 약 28 µA에 도달했습니다.
 
-[DMA 도입 전 전달 특성 예시](docs/bss138-measurement-example.png)는 이전 10회 스윕 설정에서 첫 스윕 중 저장한 화면입니다.
-
 위 수치는 저장된 그래프에서 읽은 근삿값입니다. 이 결과로 네 모드의 그래프 출력을 확인했으며, 멀티미터 대조나 동일 조건의 DMA 적용 전후 성능 비교에는 별도 측정이 필요합니다.
 
 ## 준비물과 배선
@@ -271,7 +269,6 @@ MOSFET_BSS138_IV_measurement/
 │       └── requirements.txt              # Python 의존성
 ├── docs/
 │   ├── perfboard-wiring.png              # 만능기판 배치도
-│   ├── bss138-measurement-example.png    # DMA 도입 전 전달 특성 예시
 │   ├── results/                         # DMA 적용 후 네 모드의 보드 측정 그래프
 │   └── vds-id.md                         # VDS–ID 설정, 배선 및 측정 한계
 ├── MOSFET_BSS138_IV_measurement.ioc      # CubeMX 핀·주변장치 설정
