@@ -10,7 +10,7 @@ typedef struct
     float gate_v;
 } SweepSample;
 
-void Sweep_StartHardware(float supply_v);
+void Sweep_StartHardware(void);
 void Sweep_SetOutput(uint32_t channel, float volts);
 SweepSample Sweep_ReadSample(void);
 void Sweep_SendText(const char *text);

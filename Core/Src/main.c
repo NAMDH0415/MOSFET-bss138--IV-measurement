@@ -22,7 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "sweep_app.h"
+#include "sweep_io.h"
 #include "vds_sweep_app.h"
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,6 +65,72 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static void RunMeasurement(uint8_t mode)
+{
+  char running[] = "RUN 0\r\n";
+  char done[] = "DONE 0\r\n";
+  running[4] = (char)('0' + mode);
+  done[5] = running[4];
+
+  measurement_done_live = 0U;
+  sweeps_completed_live = 0U;
+  sweep_status_live = 0U;
+  Sweep_SendText(running);
+  if (mode == MEASUREMENT_MODE_VDS_ID || mode == MEASUREMENT_MODE_VDS_ID_MULTI_GATE)
+    VdsSweep_Run(mode == MEASUREMENT_MODE_VDS_ID_MULTI_GATE);
+  else
+    Sweep_RunVgs(mode == MEASUREMENT_MODE_VGS_ID_MULTI_SUPPLY);
+
+  Sweep_SetOutput(DAC_CHANNEL_2, 0.0f);
+  Sweep_SetOutput(DAC_CHANNEL_1, 0.0f);
+  measurement_done_live = 1U;
+  /* Discard bytes sent while the blocking sweep was running. */
+  __HAL_UART_SEND_REQ(&huart2, UART_RXDATA_FLUSH_REQUEST);
+  __HAL_UART_CLEAR_OREFLAG(&huart2);
+  Sweep_SendText(done);
+}
+
+static void WaitForMeasurementCommands(void)
+{
+  uint8_t line[8]; /* START n, optionally followed by CR. */
+  size_t length = 0U;
+  bool overflow = false;
+  Sweep_SendText("READY\r\n");
+
+  for (;;)
+  {
+    uint8_t byte;
+    HAL_StatusTypeDef status = HAL_UART_Receive(&huart2, &byte, 1U, 100U);
+    if (status == HAL_TIMEOUT)
+      continue;
+    if (status != HAL_OK)
+    {
+      __HAL_UART_SEND_REQ(&huart2, UART_RXDATA_FLUSH_REQUEST);
+      __HAL_UART_CLEAR_OREFLAG(&huart2);
+      length = 0U;
+      overflow = true;
+      continue;
+    }
+    if (byte != '\n')
+    {
+      if (length < sizeof(line))
+        line[length++] = byte;
+      else
+        overflow = true;
+      continue;
+    }
+
+    if (length > 0U && line[length - 1U] == '\r')
+      --length;
+    if (!overflow && length == 7U && memcmp(line, "START ", 6U) == 0
+        && line[6] >= '0' && line[6] <= '3')
+      RunMeasurement((uint8_t)(line[6] - '0'));
+    else if (overflow || length > 0U)
+      Sweep_SendText("ERR COMMAND\r\n");
+    length = 0U;
+    overflow = false;
+  }
+}
 
 /* USER CODE END 0 */
 
@@ -99,12 +167,8 @@ int main(void)
   MX_DAC1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-#if MEASUREMENT_MODE == MEASUREMENT_MODE_VDS_ID
-  VdsSweep_Run();
-#else
-  Sweep_Init();
-  Sweep_RunAllSets();
-#endif
+  Sweep_StartHardware();
+  WaitForMeasurementCommands();
   /* USER CODE END 2 */
 
   /* Infinite loop */

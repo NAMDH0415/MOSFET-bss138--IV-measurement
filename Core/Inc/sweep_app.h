@@ -2,24 +2,18 @@
 #define SWEEP_APP_H
 
 #include "main.h"
+#include <stdbool.h>
 #include <stdint.h>
 
 /* ===== Configure measurements here; no CubeMX changes needed ===== */
 #define MEASUREMENT_MODE_VGS_ID 0  /* Sweep VGS at a fixed drain supply. */
-#define MEASUREMENT_MODE_VDS_ID 1  /* Sweep the drain supply at each fixed VGS and measure VDS. */
-
-/* Select the measurement mode, then rebuild and flash the firmware. */
-#ifndef MEASUREMENT_MODE
-#define MEASUREMENT_MODE MEASUREMENT_MODE_VGS_ID
-#endif
-
-#if MEASUREMENT_MODE != MEASUREMENT_MODE_VGS_ID && MEASUREMENT_MODE != MEASUREMENT_MODE_VDS_ID
-#error "Select MEASUREMENT_MODE_VGS_ID or MEASUREMENT_MODE_VDS_ID."
-#endif
+#define MEASUREMENT_MODE_VDS_ID 1  /* Sweep the drain supply at one fixed VGS. */
+#define MEASUREMENT_MODE_VDS_ID_MULTI_GATE 2    /* Output curves at several fixed VGS settings. */
+#define MEASUREMENT_MODE_VGS_ID_MULTI_SUPPLY 3  /* Transfer curves at several drain-supply settings. */
 
 #define VGS_START_V             0.0f
 #define VGS_END_V               3.0f
-#define SWEEP_POINTS            512U    /* 0.0, 0.1, ... 3.0 V */
+#define SWEEP_POINTS            512U    /* Points per single-supply VGS sweep. */
 #define SWEEP_SETS              1U     /* Number of full sweeps */
 #define VSUPPLY_DAC_SET_V       2.8f
 #define ADC_VREF_ASSUMED_V      3.3f
@@ -60,7 +54,6 @@ extern volatile float vsupply_measured[SWEEP_POINTS];
 extern volatile float vdrain_measured[SWEEP_POINTS];
 extern volatile float id_uA[SWEEP_POINTS];
 
-void Sweep_Init(void);
-void Sweep_RunAllSets(void);
+void Sweep_RunVgs(bool multi_supply);
 
 #endif

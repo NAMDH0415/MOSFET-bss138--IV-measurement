@@ -1,2 +1,4 @@
 /Debug/
 /Release/
+/.venv/
+__pycache__/
