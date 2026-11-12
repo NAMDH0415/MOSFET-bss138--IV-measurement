@@ -1,4 +1,4 @@
-#include "sweep_app.h"
+#include "sweep_io.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -27,7 +27,7 @@ volatile float vsupply_measured[SWEEP_POINTS] = {0};
 volatile float vdrain_measured[SWEEP_POINTS] = {0};
 volatile float id_uA[SWEEP_POINTS] = {0};
 
-static void Sweep_Fatal(uint32_t status)
+void Sweep_Fatal(uint32_t status)
 {
     sweep_status_live = status;
     Error_Handler();
@@ -39,6 +39,12 @@ static uint32_t Sweep_DacCode(float volts)
     if (volts < 0.0f) volts = 0.0f;
     if (volts > ADC_VREF_ASSUMED_V) volts = ADC_VREF_ASSUMED_V;
     return (uint32_t)(volts / ADC_VREF_ASSUMED_V * 4095.0f + 0.5f);
+}
+
+void Sweep_SetOutput(uint32_t channel, float volts)
+{
+    if (HAL_DAC_SetValue(&hdac1, channel, DAC_ALIGN_12B_R, Sweep_DacCode(volts)) != HAL_OK)
+        Sweep_Fatal(5U);
 }
 
 static HAL_StatusTypeDef Sweep_ReadADC(uint32_t channel, float *voltage)
@@ -70,7 +76,19 @@ static HAL_StatusTypeDef Sweep_ReadADC(uint32_t channel, float *voltage)
     return HAL_OK;
 }
 
-static void Sweep_SendText(const char *text)
+SweepSample Sweep_ReadSample(void)
+{
+    SweepSample sample;
+    if (Sweep_ReadADC(ADC_CHANNEL_6, &sample.supply_v) != HAL_OK) /* A1 / PA1 */
+        Sweep_Fatal(2U);
+    if (Sweep_ReadADC(ADC_CHANNEL_5, &sample.drain_v) != HAL_OK) /* A0 / PA0 */
+        Sweep_Fatal(2U);
+    if (Sweep_ReadADC(ADC_CHANNEL_8, &sample.gate_v) != HAL_OK) /* A2 / PA3 */
+        Sweep_Fatal(2U);
+    return sample;
+}
+
+void Sweep_SendText(const char *text)
 {
     size_t len = strlen(text);
     if (len > UINT16_MAX) Sweep_Fatal(4U);
@@ -78,7 +96,7 @@ static void Sweep_SendText(const char *text)
         Sweep_Fatal(3U);
 }
 
-void Sweep_Init(void)
+void Sweep_StartHardware(float supply_v)
 {
     if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED) != HAL_OK)
         Sweep_Fatal(2U);
@@ -86,13 +104,14 @@ void Sweep_Init(void)
         Sweep_Fatal(5U);
     if (HAL_DAC_Start(&hdac1, DAC_CHANNEL_2) != HAL_OK)
         Sweep_Fatal(5U);
-    if (HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1,
-                         DAC_ALIGN_12B_R, Sweep_DacCode(0.0f)) != HAL_OK)
-        Sweep_Fatal(5U);
-    if (HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_2,
-                         DAC_ALIGN_12B_R, Sweep_DacCode(VSUPPLY_DAC_SET_V)) != HAL_OK)
-        Sweep_Fatal(5U);
+    Sweep_SetOutput(DAC_CHANNEL_1, 0.0f);
+    Sweep_SetOutput(DAC_CHANNEL_2, supply_v);
     HAL_Delay(100U);
+}
+
+void Sweep_Init(void)
+{
+    Sweep_StartHardware(VSUPPLY_DAC_SET_V);
     Sweep_SendText("VGS_Set,VGS_Measured,VSupply,VDrain,ID_uA,time_ms,sample_id,sweep_id,point_index\r\n");
 }
 
@@ -106,25 +125,15 @@ void Sweep_RunAllSets(void)
         {
             float vgs_set = VGS_START_V
                  + (VGS_END_V - VGS_START_V) * (float)point / (float)(SWEEP_POINTS - 1U);
-            float supply_v = 0.0f;
-            float drain_v = 0.0f;
-            float gate_v = 0.0f;
             char csv_line[192];
 
-            if (HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R,
-                                  Sweep_DacCode(vgs_set)) != HAL_OK)
-                Sweep_Fatal(5U);
+            Sweep_SetOutput(DAC_CHANNEL_1, vgs_set);
             HAL_Delay(DAC_SETTLE_MS);
 
-            /* ADC_CHANNEL_6 = A1 / PA1 = HIGH side of 10k resistor */
-            if (Sweep_ReadADC(ADC_CHANNEL_6, &supply_v) != HAL_OK)
-                Sweep_Fatal(2U);
-            /* ADC_CHANNEL_5 = A0 / PA0 = MOSFET Drain, LOW side of resistor */
-            if (Sweep_ReadADC(ADC_CHANNEL_5, &drain_v) != HAL_OK)
-                Sweep_Fatal(2U);
-            /* ADC_CHANNEL_8 = A2 / PA3 = Gate */
-            if (Sweep_ReadADC(ADC_CHANNEL_8, &gate_v) != HAL_OK)
-                Sweep_Fatal(2U);
+            const SweepSample sample = Sweep_ReadSample();
+            const float supply_v = sample.supply_v;
+            const float drain_v = sample.drain_v;
+            const float gate_v = sample.gate_v;
 
             float drop_v = supply_v - drain_v;
             float current_uA = drop_v * (1000000.0f / DRAIN_RESISTOR_OHM);
@@ -165,9 +174,7 @@ void Sweep_RunAllSets(void)
 
         sweeps_completed_live = sweep_id;
         /* Reset gate between full sweeps (DAC buffered output may not reach true 0 V). */
-        if (HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R,
-                             Sweep_DacCode(0.0f)) != HAL_OK)
-            Sweep_Fatal(5U);
+        Sweep_SetOutput(DAC_CHANNEL_1, 0.0f);
         if (set + 1U < SWEEP_SETS) HAL_Delay(SWEEP_PAUSE_MS);
     }
     measurement_done_live = 1U;

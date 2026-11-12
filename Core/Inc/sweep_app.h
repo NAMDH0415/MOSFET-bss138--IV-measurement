@@ -5,6 +5,18 @@
 #include <stdint.h>
 
 /* ===== Configure measurements here; no CubeMX changes needed ===== */
+#define MEASUREMENT_MODE_VGS_ID 0  /* Sweep VGS at a fixed drain supply. */
+#define MEASUREMENT_MODE_VDS_ID 1  /* Sweep the drain supply at each fixed VGS and measure VDS. */
+
+/* Select the measurement mode, then rebuild and flash the firmware. */
+#ifndef MEASUREMENT_MODE
+#define MEASUREMENT_MODE MEASUREMENT_MODE_VGS_ID
+#endif
+
+#if MEASUREMENT_MODE != MEASUREMENT_MODE_VGS_ID && MEASUREMENT_MODE != MEASUREMENT_MODE_VDS_ID
+#error "Select MEASUREMENT_MODE_VGS_ID or MEASUREMENT_MODE_VDS_ID."
+#endif
+
 #define VGS_START_V             0.0f
 #define VGS_END_V               3.0f
 #define SWEEP_POINTS            512U    /* 0.0, 0.1, ... 3.0 V */

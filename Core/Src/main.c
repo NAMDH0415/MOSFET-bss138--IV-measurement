@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "sweep_app.h"
+#include "vds_sweep_app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -98,8 +99,12 @@ int main(void)
   MX_DAC1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+#if MEASUREMENT_MODE == MEASUREMENT_MODE_VDS_ID
+  VdsSweep_Run();
+#else
   Sweep_Init();
   Sweep_RunAllSets();
+#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
