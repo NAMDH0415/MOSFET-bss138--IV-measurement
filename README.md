@@ -71,9 +71,9 @@ ADC·DAC DMA를 적용한 펌웨어를 NUCLEO-L432KC에 올리고, BSS138과 10 
 
 ### 회로 연결
 
-![BSS138 측정 회로의 5×7 cm 만능기판 부품면 배치도](docs/perfboard-wiring.png)
+![NUCLEO-L432KC의 DAC·ADC 핀, 10 kΩ 저항, BSS138 게이트·드레인·소스 연결을 표시한 회로도](docs/bss138-measurement-schematic.svg)
 
-USB 전원을 분리한 상태에서 배선합니다. BSS138의 게이트(G), 드레인(D), 소스(S)는 사용한 부품의 데이터시트와 어댑터 표기를 확인해 연결합니다. 그림의 D/G/S는 어댑터 소켓의 연결 위치입니다.
+부품과 점퍼를 꽂는 위치는 [5×7 cm 만능기판 배치도](docs/perfboard-wiring.png)에서 확인할 수 있습니다. USB 전원을 분리한 상태에서 배선하고, BSS138의 게이트(G), 드레인(D), 소스(S)는 사용한 부품의 데이터시트와 어댑터 표기를 확인해 연결합니다.
 
 1. BSS138의 **소스(S)**를 Nucleo의 **GND**에 연결합니다.
 2. **게이트(G)**에 **A3**과 **A2**를 함께 연결합니다. A3가 전압을 설정하고 A2가 같은 지점의 실측 전압을 읽습니다.
@@ -268,6 +268,7 @@ MOSFET_BSS138_IV_measurement/
 │       ├── protocol.py                   # CSV 파싱과 스윕별 데이터 분류
 │       └── requirements.txt              # Python 의존성
 ├── docs/
+│   ├── bss138-measurement-schematic.svg  # DAC·ADC 핀과 BSS138 연결 회로도
 │   ├── perfboard-wiring.png              # 만능기판 배치도
 │   ├── results/                         # DMA 적용 후 네 모드의 보드 측정 그래프
 │   └── vds-id.md                         # VDS–ID 설정, 배선 및 측정 한계

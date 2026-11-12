@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="510" viewBox="0 0 960 510" role="img" aria-labelledby="title desc">
+  <title id="title">BSS138 measurement circuit</title>
+  <desc id="desc">Nucleo A4 and A1 share the supply node. A 10 kiloohm resistor connects supply to the BSS138 drain and A0. A3 and A2 connect to the gate. The source connects to Nucleo ground.</desc>
+  <style>
+    text { font-family: Inter, 'Segoe UI', Arial, sans-serif; fill: #17283a; }
+    .title { font-size: 25px; font-weight: 700; }
+    .heading { font-size: 17px; font-weight: 700; }
+    .pin { font-size: 15px; font-weight: 650; }
+    .detail { font-size: 13px; fill: #506276; }
+    .node { font-size: 13px; font-weight: 650; }
+    .wire { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .supply { stroke: #a14816; }
+    .drain { stroke: #006789; }
+    .gate { stroke: #16704d; }
+    .ground, .part { stroke: #25384b; }
+  </style>
+  <rect width="960" height="510" fill="#fff"/>
+  <text class="title" x="36" y="43">BSS138 measurement circuit</text>
+  <rect x="36" y="72" width="264" height="388" rx="10" fill="#f1f5f9" stroke="#ccd6e0"/>
+  <text class="heading" x="56" y="99">NUCLEO-L432KC</text>
+
+  <g class="pin">
+    <text x="56" y="130">A4 / PA5</text>
+    <text x="56" y="183">A1 / PA1</text>
+    <text x="56" y="263">A0 / PA0</text>
+    <text x="56" y="331">A3 / PA4</text>
+    <text x="56" y="382">A2 / PA3</text>
+    <text x="56" y="435">GND</text>
+  </g>
+  <g class="detail">
+    <text x="155" y="130">DAC1 CH2 out</text>
+    <text x="155" y="183">ADC1 IN6</text>
+    <text x="155" y="263">ADC1 IN5</text>
+    <text x="155" y="331">DAC1 CH1 out</text>
+    <text x="155" y="382">ADC1 IN8</text>
+  </g>
+
+  <g class="wire">
+    <path class="supply" d="M300 125H735V165 M300 178H460V125"/>
+    <path class="drain" d="M300 258H735V220 M735 258V300H702"/>
+    <path class="gate" d="M300 326H675 M300 377H460V326"/>
+    <path class="ground" d="M300 430H735V351H702 M735 430V453 M720 453H750 M725 459H745 M730 465H740"/>
+    <rect class="part" x="727" y="165" width="16" height="55" fill="#fff"/>
+    <path class="part" d="M675 296V357 M702 292V309 M702 317V335 M702 343V360 M735 351V326H706"/>
+  </g>
+  <path d="M706 326l9-5v10z" fill="#25384b"/>
+  <g fill="#a14816"><circle cx="300" cy="125" r="4"/><circle cx="300" cy="178" r="4"/><circle cx="460" cy="125" r="4"/></g>
+  <g fill="#006789"><circle cx="300" cy="258" r="4"/><circle cx="735" cy="258" r="4"/></g>
+  <g fill="#16704d"><circle cx="300" cy="326" r="4"/><circle cx="300" cy="377" r="4"/><circle cx="460" cy="326" r="4"/></g>
+  <g fill="#25384b"><circle cx="300" cy="430" r="4"/><circle cx="735" cy="430" r="4"/></g>
+
+  <g class="node">
+    <text x="510" y="113" style="fill:#a14816">SUPPLY · VSupply</text>
+    <text x="510" y="246" style="fill:#006789">DRAIN · VDrain / VDS</text>
+    <text x="510" y="314" style="fill:#16704d">GATE · VGS</text>
+    <text x="510" y="418">COMMON GROUND</text>
+    <text x="761" y="279">D</text>
+    <text x="651" y="351">G</text>
+    <text x="761" y="387">S</text>
+  </g>
+  <text class="heading" x="760" y="191">R1 · 10 kΩ</text>
+  <text class="heading" x="778" y="330">Q1 · BSS138</text>
+  <text class="detail" x="778" y="351">N-channel MOSFET</text>
+</svg>
