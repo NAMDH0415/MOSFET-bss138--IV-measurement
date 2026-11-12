@@ -11,7 +11,7 @@ A3 / PA4 (DAC1 CH1) ──┬── G
 A2 / PA3 (게이트 ADC) ─┘
 ```
 
-[기존 만능기판 배치도](perfboard-wiring.png)의 배선을 사용합니다. 배치도에 표시된 2.8 V 공급 노드는 이 모드에서 DAC가 0–2.8 V로 스윕하는 노드입니다. 소스는 MCU GND에 연결되어 있으므로 A0의 실측 전압이 `VDS_Measured`입니다. A1과 A0의 전압차를 저항값으로 나누면 드레인 전류가 됩니다.
+[만능기판 배치도](bss138-perfboard-layout.svg)의 배선을 사용합니다. 출력 특성 모드에서 DAC는 배치도의 공급 노드를 0–2.8 V로 스윕합니다. 소스는 MCU GND에 연결되어 있으므로 A0의 실측 전압이 `VDS_Measured`입니다. A1과 A0의 전압차를 저항값으로 나누면 드레인 전류가 됩니다.
 
 ```text
 VDS = VDrain
