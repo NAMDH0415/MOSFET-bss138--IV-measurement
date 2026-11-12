@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="682" viewBox="0 0 1160 682" role="img" aria-labelledby="title desc">
+  <title id="title">BSS138 측정용 만능기판 배치도</title>
+  <desc id="desc">5×7 cm 만능기판 부품면 배치도. B03과 B04는 공급, B07은 드레인, B12와 B13은 게이트, B16은 GND다. K03과 K07 사이에 10 kΩ 저항이 있고, R10·S10·T10에 D·G·S 소켓이 있다.</desc>
+  <defs>
+    <pattern id="holes" x="256.5" y="104.5" width="27" height="27" patternUnits="userSpaceOnUse">
+      <circle cx="13.5" cy="13.5" r="5.2" fill="#dba875" stroke="#b7875c" stroke-width=".7"/>
+      <circle cx="13.5" cy="13.5" r="2.4" fill="#775a47"/>
+    </pattern>
+    <g id="header-pad">
+      <rect x="-8" y="-8" width="16" height="16" rx="3" fill="#223342" stroke="#102331"/>
+      <rect x="-3" y="-3" width="6" height="6" rx="1" fill="#eaf0f3"/>
+    </g>
+  </defs>
+  <style>
+    text { font-family: 'Malgun Gothic', 'Segoe UI', Arial, sans-serif; fill: #1d3243; }
+    .heading { font-size: 27px; font-weight: 700; }
+    .sub { font-size: 14px; fill: #526579; }
+    .coord { font-size: 11px; font-weight: 700; fill: #697885; }
+    .pin { font-size: 13px; font-weight: 700; }
+    .pin-detail { font-size: 11px; fill: #4a6277; }
+    .label { font-size: 14px; font-weight: 700; }
+    .small { font-size: 12px; fill: #4a6277; }
+    .wire { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4; }
+    .back { stroke-dasharray: 5 5; stroke-width: 3.4; }
+  </style>
+  <rect width="1160" height="682" fill="#ffffff"/>
+  <text class="heading" x="34" y="40">BSS138 측정 회로</text>
+  <text class="sub" x="34" y="64">5 × 7 cm 만능기판 · 부품 면에서 본 배치</text>
+
+  <rect x="253" y="101" width="654" height="493" rx="12" fill="#f7e7d0" stroke="#bd9670" stroke-width="1.5"/>
+  <rect x="256.5" y="104.5" width="648" height="486" fill="url(#holes)"/>
+  <g class="coord" text-anchor="middle">
+    <text x="270" y="84">A</text>
+    <text x="297" y="84">B</text>
+    <text x="324" y="84">C</text>
+    <text x="351" y="84">D</text>
+    <text x="378" y="84">E</text>
+    <text x="405" y="84">F</text>
+    <text x="432" y="84">G</text>
+    <text x="459" y="84">H</text>
+    <text x="486" y="84">I</text>
+    <text x="513" y="84">J</text>
+    <text x="540" y="84">K</text>
+    <text x="567" y="84">L</text>
+    <text x="594" y="84">M</text>
+    <text x="621" y="84">N</text>
+    <text x="648" y="84">O</text>
+    <text x="675" y="84">P</text>
+    <text x="702" y="84">Q</text>
+    <text x="729" y="84">R</text>
+    <text x="756" y="84">S</text>
+    <text x="783" y="84">T</text>
+    <text x="810" y="84">U</text>
+    <text x="837" y="84">V</text>
+    <text x="864" y="84">W</text>
+    <text x="891" y="84">X</text>
+    <text x="239" y="122">01</text>
+    <text x="239" y="149">02</text>
+    <text x="239" y="176">03</text>
+    <text x="239" y="203">04</text>
+    <text x="239" y="230">05</text>
+    <text x="239" y="257">06</text>
+    <text x="239" y="284">07</text>
+    <text x="239" y="311">08</text>
+    <text x="239" y="338">09</text>
+    <text x="239" y="365">10</text>
+    <text x="239" y="392">11</text>
+    <text x="239" y="419">12</text>
+    <text x="239" y="446">13</text>
+    <text x="239" y="473">14</text>
+    <text x="239" y="500">15</text>
+    <text x="239" y="527">16</text>
+    <text x="239" y="554">17</text>
+    <text x="239" y="581">18</text>
+  </g>
+  <text class="label" x="34" y="94">Nucleo 핀</text>
+
+  <!-- Rear-side solder bridges, seen from the component side. -->
+  <g class="wire back">
+    <path d="M297 199V172H540" stroke="#ad4a32"/>
+    <path d="M297 280H729" stroke="#9a5a15"/>
+    <path d="M297 415V442H756" stroke="#217a5d"/>
+    <path d="M297 523H783" stroke="#39536d"/>
+  </g>
+
+  <!-- Front-side insulated wires to the D/G/S adapter socket. -->
+  <g class="wire">
+    <path d="M729 280V361" stroke="#9a5a15"/>
+    <path d="M756 361V442" stroke="#217a5d"/>
+    <path d="M783 361V523" stroke="#39536d"/>
+  </g>
+  <g>
+    <circle cx="540" cy="172" r="4.5" fill="#ad4a32"/>
+    <circle cx="540" cy="280" r="4.5" fill="#9a5a15"/>
+    <circle cx="729" cy="280" r="4.5" fill="#9a5a15"/>
+    <circle cx="756" cy="442" r="4.5" fill="#217a5d"/>
+    <circle cx="783" cy="523" r="4.5" fill="#39536d"/>
+  </g>
+  <g aria-label="K03 to K07 resistor">
+    <path d="M540 172V191M540 259V280" stroke="#6d7881" stroke-width="3"/>
+    <rect x="528" y="191" width="24" height="68" rx="9" fill="#f1d095" stroke="#947148" stroke-width="1.3"/>
+    <path d="M529 204H551" stroke="#71452b" stroke-width="5"/>
+    <path d="M529 214H551" stroke="#302c29" stroke-width="5"/>
+    <path d="M529 225H551" stroke="#cc742e" stroke-width="5"/>
+    <path d="M529 244H551" stroke="#b28a37" stroke-width="5"/>
+    <rect x="558" y="205" width="96" height="41" rx="6" fill="#fffaf2" stroke="#d8b999"/>
+    <text class="label" x="568" y="223">10 kΩ</text>
+    <text class="small" x="568" y="238">K03–K07</text>
+  </g>
+  <g aria-label="R10 S10 T10 MOSFET socket">
+    <rect x="717" y="348" width="78" height="26" rx="5" fill="#223342"/>
+    <circle cx="729" cy="361" r="4.7" fill="#e6a052"/>
+    <circle cx="756" cy="361" r="4.7" fill="#69bf9c"/>
+    <circle cx="783" cy="361" r="4.7" fill="#a8c4dc"/>
+    <rect x="716" y="318" width="80" height="25" rx="5" fill="#fffaf2"/>
+    <g class="label" text-anchor="middle">
+      <text x="729" y="338">D</text><text x="756" y="338">G</text><text x="783" y="338">S</text>
+    </g>
+    <text class="label" x="805" y="359">BSS138</text>
+    <text class="small" x="805" y="375">어댑터 소켓</text>
+  </g>
+
+    <circle cx="224" cy="172" r="3" fill="#ad4a32"/>
+    <text x="34" y="176" class="pin">A4 / PA5</text>
+    <text x="105" y="176" class="pin-detail">DAC CH2 · 공급 출력</text>
+    <use href="#header-pad" x="297" y="172"/>
+    <circle cx="224" cy="199" r="3" fill="#ad4a32"/>
+    <text x="34" y="203" class="pin">A1 / PA1</text>
+    <text x="105" y="203" class="pin-detail">ADC IN6 · 공급 측정</text>
+    <use href="#header-pad" x="297" y="199"/>
+    <circle cx="224" cy="280" r="3" fill="#9a5a15"/>
+    <text x="34" y="284" class="pin">A0 / PA0</text>
+    <text x="105" y="284" class="pin-detail">ADC IN5 · 드레인 측정</text>
+    <use href="#header-pad" x="297" y="280"/>
+    <circle cx="224" cy="415" r="3" fill="#217a5d"/>
+    <text x="34" y="419" class="pin">A3 / PA4</text>
+    <text x="105" y="419" class="pin-detail">DAC CH1 · 게이트 출력</text>
+    <use href="#header-pad" x="297" y="415"/>
+    <circle cx="224" cy="442" r="3" fill="#217a5d"/>
+    <text x="34" y="446" class="pin">A2 / PA3</text>
+    <text x="105" y="446" class="pin-detail">ADC IN8 · 게이트 측정</text>
+    <use href="#header-pad" x="297" y="442"/>
+    <circle cx="224" cy="523" r="3" fill="#39536d"/>
+    <text x="34" y="527" class="pin">GND</text>
+    <text x="105" y="527" class="pin-detail">소스와 공통 접지</text>
+    <use href="#header-pad" x="297" y="523"/>
+
+  <g>
+    <text class="label" x="928" y="166" style="fill:#ad4a32">공급</text>
+    <text class="small" x="928" y="186">B03–B04</text>
+    <text class="label" x="928" y="275" style="fill:#9a5a15">드레인</text>
+    <text class="small" x="928" y="295">B07 → R10</text>
+    <text class="label" x="928" y="437" style="fill:#217a5d">게이트</text>
+    <text class="small" x="928" y="457">B12–B13 → S10</text>
+    <text class="label" x="928" y="518" style="fill:#39536d">공통 접지</text>
+    <text class="small" x="928" y="538">B16 → T10</text>
+  </g>
+
+  <path d="M34 620H63" stroke="#465c6e" stroke-width="3.5" stroke-dasharray="5 5" stroke-linecap="round"/>
+  <text class="small" x="72" y="624">뒷면 납땜 연결</text>
+  <path d="M213 620H242" stroke="#465c6e" stroke-width="4" stroke-linecap="round"/>
+  <text class="small" x="251" y="624">앞면 피복 점퍼</text>
+  <use href="#header-pad" x="411" y="620"/>
+  <text class="small" x="427" y="624">Nucleo 연결용 핀헤더</text>
+  <text class="small" x="34" y="655">T13은 납땜 연결하지 않습니다. 선택 사항인 게이트 풀다운 100 kΩ은 K13–K16에 연결합니다.</text>
+</svg>

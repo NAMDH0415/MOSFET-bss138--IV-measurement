@@ -73,7 +73,11 @@ ADC·DAC DMA를 적용한 펌웨어를 NUCLEO-L432KC에 올리고, BSS138과 10 
 
 ![NUCLEO-L432KC의 DAC·ADC 핀, 10 kΩ 저항, BSS138 게이트·드레인·소스 연결을 표시한 회로도](docs/bss138-measurement-schematic.svg)
 
-부품과 점퍼를 꽂는 위치는 [5×7 cm 만능기판 배치도](docs/perfboard-wiring.png)에서 확인할 수 있습니다. USB 전원을 분리한 상태에서 배선하고, BSS138의 게이트(G), 드레인(D), 소스(S)는 사용한 부품의 데이터시트와 어댑터 표기를 확인해 연결합니다.
+### 5×7 cm 만능기판 배치
+
+![5×7 cm 만능기판 부품면에서 본 BSS138 소켓, 10 kΩ 저항, Nucleo 핀 배치](docs/bss138-perfboard-layout.svg)
+
+실선은 앞면 피복 점퍼, 점선은 뒷면 납땜 연결입니다. 부품 위치와 납땜 주의 사항은 [원래 만능기판 배치도](docs/perfboard-wiring.png)에서도 볼 수 있습니다. USB 전원을 분리한 상태에서 배선하고, BSS138의 게이트(G), 드레인(D), 소스(S)는 사용한 부품의 데이터시트와 어댑터 표기를 확인해 연결합니다.
 
 1. BSS138의 **소스(S)**를 Nucleo의 **GND**에 연결합니다.
 2. **게이트(G)**에 **A3**과 **A2**를 함께 연결합니다. A3가 전압을 설정하고 A2가 같은 지점의 실측 전압을 읽습니다.
@@ -269,7 +273,8 @@ MOSFET_BSS138_IV_measurement/
 │       └── requirements.txt              # Python 의존성
 ├── docs/
 │   ├── bss138-measurement-schematic.svg  # DAC·ADC 핀과 BSS138 연결 회로도
-│   ├── perfboard-wiring.png              # 만능기판 배치도
+│   ├── bss138-perfboard-layout.svg       # 만능기판 부품면과 앞·뒷면 연결
+│   ├── perfboard-wiring.png              # 원래 만능기판 배치도
 │   ├── results/                         # DMA 적용 후 네 모드의 보드 측정 그래프
 │   └── vds-id.md                         # VDS–ID 설정, 배선 및 측정 한계
 ├── MOSFET_BSS138_IV_measurement.ioc      # CubeMX 핀·주변장치 설정
