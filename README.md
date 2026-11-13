@@ -105,6 +105,12 @@ Fluke 17B+로 실측 **10.01 kΩ** 저항 양단의 DC 전압을 재고 전류�
 - **하드웨어** · NUCLEO-L432KC 보드, USB 데이터 케이블, BSS138, 10 kΩ 저항 1개, 만능기판 또는 브레드보드, 점퍼선. SOT-23 부품을 브레드보드에 꽂으려면 변환 어댑터가 필요합니다.
 - **PC 소프트웨어** · Windows, STM32CubeIDE, Python 3.10 이상. Python 그래프와 시리얼 수신에 필요한 패키지는 [아래 설치 단계](#python-실시간-uart-모니터)에서 설치합니다.
 
+### 실제 제작 보드
+
+![NUCLEO-L432KC와 점퍼선으로 연결한 BSS138 측정용 만능기판](docs/bss138-board-photo.png)
+
+왼쪽은 NUCLEO-L432KC, 오른쪽은 BSS138 측정 회로를 조립한 만능기판입니다.
+
 ### 회로 연결
 
 ![NUCLEO-L432KC의 DAC·ADC 핀, 10 kΩ 저항, BSS138 게이트·드레인·소스 연결을 표시한 회로도](docs/bss138-measurement-schematic.svg)
@@ -312,6 +318,7 @@ MOSFET_BSS138_IV_measurement/
 │       ├── protocol.py                   # CSV 파싱과 스윕별 데이터 분류
 │       └── requirements.txt              # Python 의존성
 ├── docs/
+│   ├── bss138-board-photo.png           # 실제 제작 보드와 배선 사진
 │   ├── bss138-measurement-schematic.svg  # DAC·ADC 핀과 BSS138 연결 회로도
 │   ├── bss138-perfboard-layout.svg       # 만능기판 부품면과 앞·뒷면 연결
 │   ├── results/                         # 실측 그래프, 원본 CSV, 멀티미터 기록
