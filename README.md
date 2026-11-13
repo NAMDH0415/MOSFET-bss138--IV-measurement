@@ -284,7 +284,11 @@ VGS_Set,VGS_Measured,VSupply_Set,VSupply,VDS_Measured,ID_uA,time_ms,sample_id,sw
 
 - **10 kΩ 부하가 측정 범위를 결정합니다.** 공급이 2.8 V이면 `VDS`가 0 V에 가까울 때 전류 상한은 약 280 µA입니다. 같은 공급에서 `VDS`가 2.0 V이면 가능한 전류는 약 80 µA까지입니다. 게이트를 충분히 열었을 때 출력 특성 데이터가 낮은 `VDS`에 몰릴 수 있습니다.
 - **작은 전압차에는 오차가 크게 반영됩니다.** DAC의 영점 오차, ADC 채널 간 오프셋, 실제 기준 전압과 저항 공차가 결과에 영향을 줍니다.
-- 출력 특성 모드는 공급 전압을 스윕하며 그때의 `VDS`를 읽습니다. 더 넓은 전류 범위나 목표 `VDS` 제어가 필요하면 [출력 특성 측정 문서](docs/vds-id.md)의 회로 확장 설명을 참고하세요.
+- **공급 전압과 실제 `VDS`를 구분합니다.** 전달 특성(모드 0·3)은 각 곡선에서 저항 앞의 공급 전압을 고정하지만, 게이트 전압에 따라 전류와 실제 `VDS`가 달라집니다. 출력 특성(모드 1·2)은 공급 전압을 스윕하면서 그때 도달한 `VDS`를 가로축에 표시합니다. 목표 `VDS`를 지정하거나 일정하게 유지하려면 드레인 전압 피드백 회로나 전류 제한이 있는 SMU가 필요합니다.
+
+### 측정 범위를 넓히려면
+
+현재 10 kΩ 회로보다 큰 전류를 측정하려면 드레인 구동부를 별도로 설계합니다. 예를 들어 DAC2로 외부 전류 구동 버퍼를 제어하고, 버퍼 출력과 드레인 사이에 더 작은 센스 저항을 넣습니다. A1은 저항의 버퍼 쪽, A0는 드레인 쪽을 읽고, 펌웨어의 `DRAIN_RESISTOR_OHM`을 실제 저항값에 맞춥니다. 버퍼와 MCU는 GND를 공유하고, 두 ADC 입력 전압을 MCU 허용 범위 안에 유지합니다. STM32L432의 버퍼 DAC 사양에서 접지 쪽 부하 조건은 5 kΩ 이상이므로 더 작은 센스 저항을 사용할 때는 외부 구동부의 조건을 확인합니다. [STM32L432KC 데이터시트](https://www.st.com/resource/en/datasheet/stm32l432kc.pdf)
 
 ## 프로젝트 구조
 
@@ -311,7 +315,7 @@ MOSFET_BSS138_IV_measurement/
 │   ├── bss138-measurement-schematic.svg  # DAC·ADC 핀과 BSS138 연결 회로도
 │   ├── bss138-perfboard-layout.svg       # 만능기판 부품면과 앞·뒷면 연결
 │   ├── results/                         # 실측 그래프, 원본 CSV, 멀티미터 기록
-│   └── vds-id.md                         # VDS–ID 설정, 배선 및 측정 한계
+│   └── multimeter-validation.md          # 멀티미터 대조 절차
 ├── MOSFET_BSS138_IV_measurement.ioc      # CubeMX 핀·주변장치 설정
 ├── STM32L432KCUX_FLASH.ld                # 플래시 메모리 링커 스크립트
 └── README.md
